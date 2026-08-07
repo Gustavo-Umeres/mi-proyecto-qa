@@ -1,0 +1,12 @@
+{
+  "uuid": "9d93c6ff-d74e-4cfb-ae8c-9fd59a347824",
+  "name": "Net8PlaywrightQA.Tests.ApiIntegrationTests",
+  "children": [
+    "df0754bd-b819-4945-b71a-8da3bcb65486"
+  ],
+  "befores": [],
+  "afters": [],
+  "links": [],
+  "start": 1786123308685,
+  "stop": 1786123309457
+}

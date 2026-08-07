@@ -1,0 +1,13 @@
+{
+  "uuid": "ace8a0fb-9ecb-470b-9742-b7d60423e2c1",
+  "name": "Net8PlaywrightQA.Tests.LoginE2ETests",
+  "children": [
+    "4b4280af-e2e2-464d-a0dc-02bbd774a378",
+    "8ac3c1bc-0966-4da1-9a61-ba679d3027de"
+  ],
+  "befores": [],
+  "afters": [],
+  "links": [],
+  "start": 1786123262737,
+  "stop": 1786123263239
+}

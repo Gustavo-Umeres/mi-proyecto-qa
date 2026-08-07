@@ -62,28 +62,29 @@ jobs:
         run: |
           dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results_${{ matrix.browser }}.trx"
 
-      # 7. Generar los Resultados de Allure Report
-      - name: Generar Resultados de Allure Report
+      # 7. Generar los Resultados de Allure Report (Nativo npm - Sin Docker)
+      - name: Instalar Allure CLI y Generar Reporte HTML
         if: always()
-        uses: simple-elf/allure-report-action@v1.7
-        with:
-          allure_results: bin/Release/net8.0/allure-results
-          allure_history: allure-history
+        run: |
+          npm install -g allure-commandline --save-dev
+          npx allure generate bin/Release/net8.0/allure-results --clean -o allure-report || true
 
-      # 8. Guardar Evidencias en GitHub (Artifacts - Screenshots y Videos de Fallos)
-      - name: Subir Evidencias y Capturas de Pantalla (Artifact)
+      # 8. Guardar Evidencias y Reporte Allure HTML en GitHub Artifacts
+      - name: Subir Evidencias y Reporte Allure (Artifact)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: evidencias-qa-${{ matrix.browser }}
+          name: evidencias-y-reporte-allure-${{ matrix.browser }}
           path: |
+            allure-report/
             bin/Release/net8.0/evidencias/
             bin/Release/net8.0/*.trx
           retention-days: 7
 
-      # 9. Enviar Notificación por Correo Electrónico
+      # 9. Enviar Notificación por Correo Electrónico (Opcional si están configurados los secretos)
       - name: Enviar Reporte por Correo Electrónico
         if: always()
+        continue-on-error: true
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com

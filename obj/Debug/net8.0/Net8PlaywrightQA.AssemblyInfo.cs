@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Net8PlaywrightQA")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f6f5d25609adcf3b5c76f720895ed540c8d3e02f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+773dffca4e628e5bfd69009dc9d144d3a982df8b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Net8PlaywrightQA")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Net8PlaywrightQA")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
