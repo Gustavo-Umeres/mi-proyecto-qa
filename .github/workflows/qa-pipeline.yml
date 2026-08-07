@@ -148,8 +148,8 @@ jobs:
   deploy-github-pages:
     name: Publicar Allure Report en GitHub Pages
     needs: test-execution
-    # Estándar Enterprise: Despliegue de reporte a Pages solo tras el Merge a main
-    if: success() && github.ref == 'refs/heads/main'
+    # Estándar Enterprise: Despliegue de reporte a Pages únicamente en PUSH a main (post-merge), no en Pull Requests
+    if: success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
