@@ -73,8 +73,21 @@ namespace Net8PlaywrightQA.Tests
         public async Task TearDown()
         {
             var video = Page.Video;
+            string videoPath = string.Empty;
 
-            // Adjuntar screenshot si el test falló
+            if (video != null)
+            {
+                try
+                {
+                    videoPath = await video.PathAsync();
+                }
+                catch
+                {
+                    // Ignorar si la ruta no está disponible aún
+                }
+            }
+
+            // Captura de pantalla si falló
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
                 string evidenciasDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "evidencias");
@@ -85,24 +98,21 @@ namespace Net8PlaywrightQA.Tests
                 AllureApi.AddAttachment($"Captura_Fallo_{TestContext.CurrentContext.Test.Name}", "image/png", screenshotPath);
             }
 
-            // Cerrar explícitamente el contexto del navegador para obligar a Playwright a vaciar (flush) el archivo de video al disco
+            // 1. Cerrar la página y el contexto de forma explícita
+            await Page.CloseAsync();
             await Context.CloseAsync();
 
-            // Adjuntar el archivo de video completo grabado
-            if (video != null)
+            // 2. Dar 300ms de margen al SO para que libere el handle y escriba el header del archivo .webm
+            await Task.Delay(300);
+
+            // 3. Adjuntar el video verificado (> 0 Bytes) a Allure y NUnit
+            if (!string.IsNullOrEmpty(videoPath) && File.Exists(videoPath))
             {
-                try
+                FileInfo fileInfo = new FileInfo(videoPath);
+                if (fileInfo.Length > 0)
                 {
-                    string videoPath = await video.PathAsync();
-                    if (!string.IsNullOrEmpty(videoPath) && File.Exists(videoPath) && new FileInfo(videoPath).Length > 0)
-                    {
-                        TestContext.AddTestAttachment(videoPath, "Video de Ejecución (Playwright)");
-                        AllureApi.AddAttachment($"Video_{TestContext.CurrentContext.Test.Name}", "video/webm", videoPath);
-                    }
-                }
-                catch
-                {
-                    // Si el video fue eliminado o cerrado, continuar silenciosamente
+                    TestContext.AddTestAttachment(videoPath, "Video de Ejecución (Playwright)");
+                    AllureApi.AddAttachment($"Video_{TestContext.CurrentContext.Test.Name}", "video/webm", videoPath);
                 }
             }
         }
