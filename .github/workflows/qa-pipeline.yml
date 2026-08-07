@@ -1,4 +1,4 @@
-name: Real World QA CI/CD Pipeline - .NET 8 & Playwright
+name: Enterprise QA CI/CD Pipeline - .NET 8 & Playwright
 
 on:
   push:
@@ -66,12 +66,12 @@ jobs:
         run: |
           dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results_${{ matrix.browser }}.trx"
 
-      # 7. Generar los Resultados de Allure Report (Nativo npm - Sin Docker)
+      # 7. Generar los Resultados de Allure Report (Nativo npm)
       - name: Instalar Allure CLI y Generar Reporte HTML
         if: always()
         run: |
           npm install -g allure-commandline --save-dev
-          npx allure generate bin/Release/net8.0/allure-results --clean -o allure-report || true
+          npx allure generate bin/Release/net8.0/allure-results --clean -o allure-report
 
       # 8. Guardar Evidencias y Reporte Allure HTML en GitHub Artifacts
       - name: Subir Evidencias y Reporte Allure (Artifact)
@@ -85,10 +85,9 @@ jobs:
             bin/Release/net8.0/*.trx
           retention-days: 7
 
-      # 9. Enviar Notificación por Correo Electrónico (Opcional si están configurados los secretos)
+      # 9. Enviar Notificación por Correo Electrónico (Solo si las credenciales de SMTP existen)
       - name: Enviar Reporte por Correo Electrónico
-        if: always()
-        continue-on-error: true
+        if: always() && secrets.SMTP_USERNAME != ''
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -120,7 +119,6 @@ jobs:
       # 10. Publicar Comentario Automático en el PR con los Resultados de QA
       - name: Comentar Resultados en el Pull Request
         if: always() && github.event_name == 'pull_request' && matrix.browser == 'chromium'
-        continue-on-error: true
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -150,8 +148,8 @@ jobs:
   deploy-github-pages:
     name: Publicar Allure Report en GitHub Pages
     needs: test-execution
-    # Solo despliega a Pages cuando se une a la rama principal 'main', no en los PRs temporales
-    if: always() && github.ref == 'refs/heads/main'
+    # Estándar Enterprise: Despliegue de reporte a Pages solo tras el Merge a main
+    if: success() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
