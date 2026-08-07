@@ -1,4 +1,5 @@
-using Allure.NUnit.Attributes;
+using Allure.NUnit;
+using Allure.Net.Commons;
 using Microsoft.Playwright;
 using NUnit.Framework;
 

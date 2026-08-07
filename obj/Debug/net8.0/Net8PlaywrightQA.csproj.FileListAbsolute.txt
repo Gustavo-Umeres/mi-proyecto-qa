@@ -1,0 +1,6 @@
+D:\Escritorio\pruebas\gitaction\obj\Debug\net8.0\Net8PlaywrightQA.csproj.AssemblyReference.cache
+D:\Escritorio\pruebas\gitaction\obj\Debug\net8.0\Net8PlaywrightQA.GeneratedMSBuildEditorConfig.editorconfig
+D:\Escritorio\pruebas\gitaction\obj\Debug\net8.0\Net8PlaywrightQA.AssemblyInfoInputs.cache
+D:\Escritorio\pruebas\gitaction\obj\Debug\net8.0\Net8PlaywrightQA.AssemblyInfo.cs
+D:\Escritorio\pruebas\gitaction\obj\Debug\net8.0\Net8PlaywrightQA.csproj.CoreCompileInputs.cache
+D:\Escritorio\pruebas\gitaction\obj\Debug\net8.0\Net8PlaywrightQA.sourcelink.json
