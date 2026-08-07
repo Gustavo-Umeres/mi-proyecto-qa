@@ -112,3 +112,34 @@ jobs:
 
             Saludos,
             QA Automation Bot
+
+  deploy-github-pages:
+    name: Publicar Allure Report en GitHub Pages
+    needs: test-execution
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Descargar Reporte Allure
+        uses: actions/download-artifact@v4
+        with:
+          name: evidencias-y-reporte-allure-chromium
+          path: ./allure-artifact
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir artefacto a GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./allure-artifact/allure-report
+
+      - name: Desplegar a GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
