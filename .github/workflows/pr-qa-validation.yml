@@ -71,7 +71,9 @@ jobs:
 
       # 9. Enviar Notificación por Correo Electrónico (Solo si las credenciales de SMTP existen)
       - name: Enviar Reporte por Correo Electrónico
-        if: always() && secrets.SMTP_USERNAME != ''
+        if: always() && env.SMTP_USER != ''
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USERNAME }}
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
