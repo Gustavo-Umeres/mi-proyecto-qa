@@ -11,10 +11,6 @@ jobs:
   test-execution:
     name: Pruebas Automáticas (.NET 8 + Playwright)
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
 
     strategy:
       fail-fast: false
@@ -99,52 +95,3 @@ jobs:
 
             🔗 Ver ejecución y descargar evidencias en GitHub:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-      # 10. Publicar Comentario Automático en el PR con los Resultados de QA
-      - name: Comentar Resultados en el Pull Request
-        if: always() && matrix.browser == 'chromium'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            let issueNumber = context.issue.number || (context.payload.pull_request && context.payload.pull_request.number);
-
-            if (!issueNumber && context.payload.ref) {
-              const headBranch = context.payload.ref.replace('refs/heads/', '');
-              if (headBranch) {
-                const prs = await github.rest.pulls.list({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  head: `${context.repo.owner}:${headBranch}`,
-                  state: 'open'
-                });
-                if (prs.data.length > 0) {
-                  issueNumber = prs.data[0].number;
-                }
-              }
-            }
-
-            if (!issueNumber) return;
-
-            const status = '${{ job.status }}';
-            const icon = status === 'success' ? '✅' : '❌';
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-
-            const body = `### ${icon} Reporte Automático de QA en PR #${issueNumber}
-
-            - **Estado de la Ejecución:** \`${status.toUpperCase()}\`
-            - **Framework:** \`.NET 8 + Playwright C#\`
-            - **Autor:** @${context.actor}
-
-            📊 **Reporte y Evidencias de este PR:**
-            - 📦 **Allure HTML & Videos (15.5 KB):** [Descargar Artefactos del Run](${runUrl})
-            - 🌐 **Dashboard Oficial de Main:** [Ver GitHub Pages](https://gustavo-umeres.github.io/mi-proyecto-qa/) *(Se actualiza tras hacer el Merge)*
-
-            🔗 [Ver Detalles del Run en GitHub Actions](${runUrl})`;
-
-            await github.rest.issues.createComment({
-              issue_number: issueNumber,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
