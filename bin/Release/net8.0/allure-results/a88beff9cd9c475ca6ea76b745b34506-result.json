@@ -1,0 +1,64 @@
+{
+  "uuid": "2895579d-431a-4143-be86-7b6a19eb4590",
+  "historyId": "0e5f941ec351fd9c44a5d2823c098468",
+  "testCaseId": "2f167afbb1e279c53f57a2c08b0310b4",
+  "fullName": "Net8PlaywrightQA:Net8PlaywrightQA.Tests.LoginE2ETests.TC03_ValidarVisibilidadDelLogo()",
+  "labels": [
+    {
+      "name": "thread",
+      "value": "NonParallelWorker"
+    },
+    {
+      "name": "host",
+      "value": "DESKTOP-JV0JDJL"
+    },
+    {
+      "name": "language",
+      "value": "C#"
+    },
+    {
+      "name": "framework",
+      "value": "NUnit 3"
+    },
+    {
+      "name": "package",
+      "value": "Net8PlaywrightQA.Tests"
+    },
+    {
+      "name": "testMethod",
+      "value": "TC03_ValidarVisibilidadDelLogo"
+    },
+    {
+      "name": "testClass",
+      "value": "LoginE2ETests"
+    },
+    {
+      "name": "severity",
+      "value": "minor"
+    },
+    {
+      "name": "suite",
+      "value": "Suite E2E - Autenticación y Seguridad"
+    },
+    {
+      "name": "feature",
+      "value": "Login de Usuarios"
+    }
+  ],
+  "links": [],
+  "name": "TC03_ValidarVisibilidadDelLogo",
+  "status": "passed",
+  "stage": "finished",
+  "description": "TC03 - Validar Visibilidad del Logo de Login en el Front-End",
+  "steps": [],
+  "attachments": [
+    {
+      "name": "Video_TC03_ValidarVisibilidadDelLogo",
+      "source": "55c66a23-fe32-414d-844b-9248935ed52f-attachment.webm",
+      "type": "video/webm"
+    }
+  ],
+  "parameters": [],
+  "start": 1786128556456,
+  "stop": 1786128557387
+}

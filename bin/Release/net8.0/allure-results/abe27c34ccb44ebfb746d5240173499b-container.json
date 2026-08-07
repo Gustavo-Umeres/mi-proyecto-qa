@@ -1,0 +1,12 @@
+{
+  "uuid": "f738a694-2a6e-4782-9bd7-18d9ccf1d023",
+  "name": "Net8PlaywrightQA.Tests.ApiIntegrationTests.API01_ObtenerUsuario_DebeResponder200OK",
+  "children": [
+    "07260e96-12c3-4a26-a889-639b9e36bd71"
+  ],
+  "befores": [],
+  "afters": [],
+  "links": [],
+  "start": 1786128546010,
+  "stop": 1786128552710
+}
