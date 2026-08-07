@@ -36,7 +36,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Instalar Navegadores de Playwright
-        run: pwsh bin/Release/net8.0/playwright.ps1 install --with-deps
+        run: pwsh bin/Release/net8.0/playwright.ps1 install
 
       - name: Ejecutar Pruebas de Regresión
         env:

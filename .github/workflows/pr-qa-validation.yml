@@ -36,9 +36,9 @@ jobs:
       - name: Compilar Solución (.NET 8)
         run: dotnet build --configuration Release --no-restore
 
-      # 5. Instalar los Navegadores de Playwright
+      # 5. Instalar los Navegadores de Playwright (Ultra rápido)
       - name: Instalar Navegadores de Playwright
-        run: pwsh bin/Release/net8.0/playwright.ps1 install --with-deps
+        run: pwsh bin/Release/net8.0/playwright.ps1 install
 
       # 6. Ejecutar las Pruebas de QA con Inyección de Secretos
       - name: Ejecutar Pruebas E2E & API en ${{ matrix.browser }}
