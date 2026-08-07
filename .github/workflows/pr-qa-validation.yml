@@ -93,5 +93,6 @@ jobs:
             - Disparado por: ${{ github.actor }}
             - Rama / Commit: ${{ github.ref_name }} (${{ github.sha }})
 
-            🔗 Ver ejecución y descargar evidencias en GitHub:
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            📊 Reportes y Evidencias de QA:
+            - 🌐 Dashboard Web de Allure Report: https://gustavo-umeres.github.io/mi-proyecto-qa/
+            - 📦 Descargar Artefactos (.zip) y Videos: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
