@@ -72,10 +72,9 @@ namespace Net8PlaywrightQA.Tests
         [TearDown]
         public async Task TearDown()
         {
-            // Cierra la página para forzar que el buffer de video se escriba en el archivo
-            await Page.CloseAsync();
+            var video = Page.Video;
 
-            // Adjuntar screenshot si falló
+            // Adjuntar screenshot si el test falló
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
                 string evidenciasDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "evidencias");
@@ -86,13 +85,16 @@ namespace Net8PlaywrightQA.Tests
                 AllureApi.AddAttachment($"Captura_Fallo_{TestContext.CurrentContext.Test.Name}", "image/png", screenshotPath);
             }
 
-            // Adjuntar el video grabado a NUnit y Allure (Para PASADOS y FALLADOS)
-            if (Page.Video != null)
+            // Cerrar explícitamente el contexto del navegador para obligar a Playwright a vaciar (flush) el archivo de video al disco
+            await Context.CloseAsync();
+
+            // Adjuntar el archivo de video completo grabado
+            if (video != null)
             {
                 try
                 {
-                    string videoPath = await Page.Video.PathAsync();
-                    if (!string.IsNullOrEmpty(videoPath) && File.Exists(videoPath))
+                    string videoPath = await video.PathAsync();
+                    if (!string.IsNullOrEmpty(videoPath) && File.Exists(videoPath) && new FileInfo(videoPath).Length > 0)
                     {
                         TestContext.AddTestAttachment(videoPath, "Video de Ejecución (Playwright)");
                         AllureApi.AddAttachment($"Video_{TestContext.CurrentContext.Test.Name}", "video/webm", videoPath);
@@ -100,7 +102,7 @@ namespace Net8PlaywrightQA.Tests
                 }
                 catch
                 {
-                    // Si el video aún no se ha liberado por completo, ignorar excepción silenciosamente
+                    // Si el video fue eliminado o cerrado, continuar silenciosamente
                 }
             }
         }
