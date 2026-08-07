@@ -91,16 +91,7 @@ jobs:
             🔗 Ver ejecución y descargar evidencias en GitHub:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-      # 10. Publicar Allure Report Web exclusivo para la subcarpeta de este PR
-      - name: Publicar Allure Report Web de este PR
-        if: always() && github.event_name == 'pull_request' && matrix.browser == 'chromium'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
-          destination_dir: pr-${{ github.event.number }}
-
-      # 11. Comentar Resultados en el PR con link directo al Allure Exclusivo de ESTE PR
+      # 10. Comentar Resultados en el PR con link directo a los Artefactos del Run
       - name: Comentar Resultados en el Pull Request
         if: always() && github.event_name == 'pull_request' && matrix.browser == 'chromium'
         uses: actions/github-script@v7
@@ -110,7 +101,7 @@ jobs:
             const status = '${{ job.status }}';
             const icon = status === 'success' ? '✅' : '❌';
             const prNumber = context.issue.number;
-            const allurePrUrl = `https://gustavo-umeres.github.io/mi-proyecto-qa/pr-${prNumber}/`;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
 
             const body = `### ${icon} Reporte Automático de QA en PR #${prNumber}
 
@@ -119,11 +110,11 @@ jobs:
             - **Autor del PR:** @${{ github.actor }}
             - **Rama:** \`${{ github.head_ref }}\`
 
-            📊 **Reporte Web Exclusivo de ESTE PR:**
-            - 🌐 **Ver Allure de este PR:** [Abrir Allure Report del PR #${prNumber}](${allurePrUrl})
-            - 📦 **Videos y Screenshots:** [Descargar Artefactos de este Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            📊 **Reporte y Evidencias de este PR:**
+            - 📦 **Allure HTML & Videos de este PR:** [Descargar Artefactos del Run](${runUrl})
+            - 🌐 **Dashboard Oficial de Main:** [Ver GitHub Pages](https://gustavo-umeres.github.io/mi-proyecto-qa/) *(Se actualiza tras hacer el Merge)*
 
-            🔗 [Ver Detalles y Logs de Consola en GitHub Actions](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`;
+            🔗 [Ver Detalles y Logs de Consola en GitHub Actions](${runUrl})`;
 
             github.rest.issues.createComment({
               issue_number: prNumber,
