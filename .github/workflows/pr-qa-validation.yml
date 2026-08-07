@@ -107,10 +107,10 @@ jobs:
             - **Rama:** \`${{ github.head_ref }}\`
 
             📊 **Reportes y Evidencias:**
-            - **Allure Report:** [Ver Dashboard de Allure](https://gustavo-umeres.github.io/mi-proyecto-qa/)
-            - **Evidencias en Video y Fotos:** Adjuntadas en los Artefactos del Run.
+            - **Reporte Allure & Videos de este PR:** [Descargar Artefactos del Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            - **Dashboard Oficial de Main:** [Ver GitHub Pages](https://gustavo-umeres.github.io/mi-proyecto-qa/) *(Se actualiza tras hacer el Merge)*
 
-            🔗 [Ver Ejecución Completa en GitHub Actions](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`;
+            🔗 [Ver Detalles y Logs en GitHub Actions](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
