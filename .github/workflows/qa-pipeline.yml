@@ -1,0 +1,113 @@
+name: Real World QA CI/CD Pipeline - .NET 8 & Playwright
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Regresión nocturna: Lunes a Viernes a las 2:00 AM UTC
+    - cron: '0 2 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Selecciona el Ambiente de Pruebas'
+        required: true
+        default: 'QA'
+        type: choice
+        options:
+          - QA
+          - STAGING
+
+jobs:
+  test-execution:
+    name: Ejecución de Pruebas (.NET 8 + Playwright)
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+
+    steps:
+      # 1. Clonar el repositorio
+      - name: Checkout Código Fuente
+        uses: actions/checkout@v4
+
+      # 2. Instalar el SDK de .NET 8
+      - name: Configurar .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # 3. Restaurar e Instalar Dependencias del Proyecto
+      - name: Restaurar Paquetes NuGet
+        run: dotnet restore
+
+      # 4. Compilar la Solución .NET
+      - name: Compilar Solución (.NET 8)
+        run: dotnet build --configuration Release --no-restore
+
+      # 5. Instalar los Navegadores de Playwright
+      - name: Instalar Navegadores de Playwright
+        run: pwsh bin/Release/net8.0/playwright.ps1 install --with-deps
+
+      # 6. Ejecutar las Pruebas de QA con Inyección de Secretos
+      - name: Ejecutar Pruebas E2E & API en ${{ matrix.browser }}
+        env:
+          QA_ENV: ${{ inputs.environment || 'QA' }}
+          QA_USER_EMAIL: ${{ secrets.QA_USER_EMAIL }}
+          QA_USER_PASSWORD: ${{ secrets.QA_USER_PASSWORD }}
+          PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
+        run: |
+          dotnet test --configuration Release --no-build --logger "trx;LogFileName=test_results_${{ matrix.browser }}.trx"
+
+      # 7. Generar los Resultados de Allure Report
+      - name: Generar Resultados de Allure Report
+        if: always()
+        uses: simple-elf/allure-report-action@v1.7
+        with:
+          allure_results: bin/Release/net8.0/allure-results
+          allure_history: allure-history
+
+      # 8. Guardar Evidencias en GitHub (Artifacts - Screenshots y Videos de Fallos)
+      - name: Subir Evidencias y Capturas de Pantalla (Artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-qa-${{ matrix.browser }}
+          path: |
+            bin/Release/net8.0/evidencias/
+            bin/Release/net8.0/*.trx
+          retention-days: 7
+
+      # 9. Enviar Notificación por Correo Electrónico
+      - name: Enviar Reporte por Correo Electrónico
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "📊 [QA CI/CD] Reporte de Pruebas .NET 8 - Status: ${{ job.status }}"
+          to: ${{ secrets.NOTIFY_EMAIL_TO || 'qa-team@empresa.com' }}
+          from: "GitHub Actions QA Robot <qa-robot@empresa.com>"
+          body: |
+            Hola Equipo de QA,
+
+            Se ha completado la ejecución de la suite de pruebas automáticas en GitHub Actions.
+
+            📌 Detalle de Ejecución:
+            - Estado: ${{ job.status }}
+            - Navegador: ${{ matrix.browser }}
+            - Ambiente: ${{ inputs.environment || 'QA' }}
+            - Disparado por: ${{ github.actor }}
+            - Rama / Commit: ${{ github.ref_name }} (${{ github.sha }})
+
+            🔗 Ver ejecución y descargar evidencias en GitHub:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Saludos,
+            QA Automation Bot
