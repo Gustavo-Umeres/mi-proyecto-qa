@@ -1,0 +1,64 @@
+{
+  "uuid": "43a58c9f-e051-4ccf-ba8e-aea14ba86544",
+  "historyId": "c199e3aa9a3a9fd861d917b72d81c040",
+  "testCaseId": "fb698a914c38bdf52372bebafcc51b5d",
+  "fullName": "Net8PlaywrightQA:Net8PlaywrightQA.Tests.LoginE2ETests.TC02_LoginInvalido_DebeMostrarMensajeDeError()",
+  "labels": [
+    {
+      "name": "thread",
+      "value": "NonParallelWorker"
+    },
+    {
+      "name": "host",
+      "value": "DESKTOP-JV0JDJL"
+    },
+    {
+      "name": "language",
+      "value": "C#"
+    },
+    {
+      "name": "framework",
+      "value": "NUnit 3"
+    },
+    {
+      "name": "package",
+      "value": "Net8PlaywrightQA.Tests"
+    },
+    {
+      "name": "testMethod",
+      "value": "TC02_LoginInvalido_DebeMostrarMensajeDeError"
+    },
+    {
+      "name": "testClass",
+      "value": "LoginE2ETests"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "suite",
+      "value": "Suite E2E - Autenticación y Seguridad"
+    },
+    {
+      "name": "feature",
+      "value": "Login de Usuarios"
+    }
+  ],
+  "links": [],
+  "name": "TC02_LoginInvalido_DebeMostrarMensajeDeError",
+  "status": "passed",
+  "stage": "finished",
+  "description": "TC02 - Quality Gate Check: Login con Credenciales Inválidas",
+  "steps": [],
+  "attachments": [
+    {
+      "name": "Video_TC02_LoginInvalido_DebeMostrarMensajeDeError",
+      "source": "2f1047e3-2902-468d-be91-14e16243d7fd-attachment.webm",
+      "type": "video/webm"
+    }
+  ],
+  "parameters": [],
+  "start": 1786126023737,
+  "stop": 1786126024657
+}

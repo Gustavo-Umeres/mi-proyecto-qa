@@ -1,0 +1,12 @@
+{
+  "uuid": "4215867f-b1ac-4b5a-8d5d-54c02749ef57",
+  "name": "Net8PlaywrightQA.Tests.LoginE2ETests.TC03_ValidarVisibilidadDelLogo",
+  "children": [
+    "6d02ae57-0dd0-4bf5-9bc7-3aa2fbac49b7"
+  ],
+  "befores": [],
+  "afters": [],
+  "links": [],
+  "start": 1786126024658,
+  "stop": 1786126025558
+}

@@ -21,7 +21,7 @@ namespace Net8PlaywrightQA.Tests
         {
             return new BrowserNewContextOptions
             {
-                RecordVideoDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "evidencias", "videos"),
+                RecordVideoDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "evidencias", "temp_videos"),
                 RecordVideoSize = new RecordVideoSize { Width = 1280, Height = 720 }
             };
         }
@@ -73,46 +73,43 @@ namespace Net8PlaywrightQA.Tests
         public async Task TearDown()
         {
             var video = Page.Video;
-            string videoPath = string.Empty;
+            string evidenciasDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "evidencias");
+            Directory.CreateDirectory(evidenciasDir);
 
-            if (video != null)
-            {
-                try
-                {
-                    videoPath = await video.PathAsync();
-                }
-                catch
-                {
-                    // Ignorar si la ruta no está disponible aún
-                }
-            }
-
-            // Captura de pantalla si falló
+            // 1. Captura de pantalla si falló
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
-                string evidenciasDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "evidencias");
-                Directory.CreateDirectory(evidenciasDir);
                 string screenshotPath = Path.Combine(evidenciasDir, $"fallo_{TestContext.CurrentContext.Test.Name}.png");
                 await Page.ScreenshotAsync(new PageScreenshotOptions { Path = screenshotPath });
                 TestContext.AddTestAttachment(screenshotPath, "Evidencia de Fallo (Screenshot)");
                 AllureApi.AddAttachment($"Captura_Fallo_{TestContext.CurrentContext.Test.Name}", "image/png", screenshotPath);
             }
 
-            // 1. Cerrar la página y el contexto de forma explícita
+            // 2. Cerrar la página y el contexto explícitamente para finalizar la sesión de grabación
             await Page.CloseAsync();
             await Context.CloseAsync();
 
-            // 2. Dar 300ms de margen al SO para que libere el handle y escriba el header del archivo .webm
-            await Task.Delay(300);
-
-            // 3. Adjuntar el video verificado (> 0 Bytes) a Allure y NUnit
-            if (!string.IsNullOrEmpty(videoPath) && File.Exists(videoPath))
+            // 3. Guardar el video mediante SaveAsAsync (Garantiza esperar a que Playwright complete y cierre el archivo)
+            if (video != null)
             {
-                FileInfo fileInfo = new FileInfo(videoPath);
-                if (fileInfo.Length > 0)
+                try
                 {
-                    TestContext.AddTestAttachment(videoPath, "Video de Ejecución (Playwright)");
-                    AllureApi.AddAttachment($"Video_{TestContext.CurrentContext.Test.Name}", "video/webm", videoPath);
+                    string saveVideoPath = Path.Combine(evidenciasDir, $"video_{TestContext.CurrentContext.Test.Name}.webm");
+                    await video.SaveAsAsync(saveVideoPath);
+
+                    if (File.Exists(saveVideoPath))
+                    {
+                        FileInfo fileInfo = new FileInfo(saveVideoPath);
+                        if (fileInfo.Length > 0)
+                        {
+                            TestContext.AddTestAttachment(saveVideoPath, "Video de Ejecución (Playwright)");
+                            AllureApi.AddAttachment($"Video_{TestContext.CurrentContext.Test.Name}", "video/webm", saveVideoPath);
+                        }
+                    }
+                }
+                catch
+                {
+                    // Si el video no se pudo guardar, continuar limpiamente
                 }
             }
         }
