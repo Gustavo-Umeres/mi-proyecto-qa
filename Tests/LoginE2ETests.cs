@@ -60,6 +60,15 @@ namespace Net8PlaywrightQA.Tests
             Assert.That(errorText, Does.Contain("Username and password do not match"), "El mensaje de error debe ser visible");
         }
 
+        [Test]
+        [AllureSeverity(Allure.Net.Commons.SeverityLevel.minor)]
+        [AllureDescription("TC03 - Validar Visibilidad del Logo de Login en el Front-End")]
+        public async Task TC03_ValidarVisibilidadDelLogo()
+        {
+            await _loginPage.NavigateToAsync(_baseUrl);
+            await Expect(Page.Locator(".login_logo")).ToBeVisibleAsync();
+        }
+
         [TearDown]
         public async Task TearDown()
         {
