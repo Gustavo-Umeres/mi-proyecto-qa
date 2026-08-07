@@ -1,0 +1,58 @@
+{
+  "uuid": "6444d8e0-96fc-44a1-a0bb-3f8bf65596e7",
+  "historyId": "89c25d1c6c3a643d33cb26edd2f516a0",
+  "testCaseId": "6bfac8ab472e884334a2ae338c0982cb",
+  "fullName": "Net8PlaywrightQA:Net8PlaywrightQA.Tests.ApiIntegrationTests.API01_ObtenerUsuario_DebeResponder200OK()",
+  "labels": [
+    {
+      "name": "thread",
+      "value": "NonParallelWorker"
+    },
+    {
+      "name": "host",
+      "value": "DESKTOP-JV0JDJL"
+    },
+    {
+      "name": "language",
+      "value": "C#"
+    },
+    {
+      "name": "framework",
+      "value": "NUnit 3"
+    },
+    {
+      "name": "package",
+      "value": "Net8PlaywrightQA.Tests"
+    },
+    {
+      "name": "testMethod",
+      "value": "API01_ObtenerUsuario_DebeResponder200OK"
+    },
+    {
+      "name": "testClass",
+      "value": "ApiIntegrationTests"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "suite",
+      "value": "Suite de API - Microservicios"
+    },
+    {
+      "name": "feature",
+      "value": "API de Usuarios"
+    }
+  ],
+  "links": [],
+  "name": "API01_ObtenerUsuario_DebeResponder200OK",
+  "status": "passed",
+  "stage": "finished",
+  "description": "API-01 - Validar respuesta exitosa HTTP 200 y Contrato de JSON",
+  "steps": [],
+  "attachments": [],
+  "parameters": [],
+  "start": 1786124291705,
+  "stop": 1786124292358
+}

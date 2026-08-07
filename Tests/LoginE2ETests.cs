@@ -17,6 +17,15 @@ namespace Net8PlaywrightQA.Tests
         private LoginPage _loginPage = null!;
         private string _baseUrl = "https://www.saucedemo.com";
 
+        public override BrowserNewContextOptions ContextOptions()
+        {
+            return new BrowserNewContextOptions
+            {
+                RecordVideoDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "evidencias", "videos"),
+                RecordVideoSize = new RecordVideoSize { Width = 1280, Height = 720 }
+            };
+        }
+
         [SetUp]
         public void Setup()
         {
@@ -54,13 +63,36 @@ namespace Net8PlaywrightQA.Tests
         [TearDown]
         public async Task TearDown()
         {
-            // Si el test falló, guardar evidencia (screenshot) para el pipeline de CI/CD
+            // Cierra la página para forzar que el buffer de video se escriba en el archivo
+            await Page.CloseAsync();
+
+            // Adjuntar screenshot si falló
             if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
             {
-                Directory.CreateDirectory("evidencias");
-                string screenshotPath = Path.Combine("evidencias", $"fallo_{TestContext.CurrentContext.Test.Name}.png");
+                string evidenciasDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "evidencias");
+                Directory.CreateDirectory(evidenciasDir);
+                string screenshotPath = Path.Combine(evidenciasDir, $"fallo_{TestContext.CurrentContext.Test.Name}.png");
                 await Page.ScreenshotAsync(new PageScreenshotOptions { Path = screenshotPath });
-                TestContext.AddTestAttachment(screenshotPath, "Evidencia de Fallo");
+                TestContext.AddTestAttachment(screenshotPath, "Evidencia de Fallo (Screenshot)");
+                AllureApi.AddAttachment($"Captura_Fallo_{TestContext.CurrentContext.Test.Name}", "image/png", screenshotPath);
+            }
+
+            // Adjuntar el video grabado a NUnit y Allure (Para PASADOS y FALLADOS)
+            if (Page.Video != null)
+            {
+                try
+                {
+                    string videoPath = await Page.Video.PathAsync();
+                    if (!string.IsNullOrEmpty(videoPath) && File.Exists(videoPath))
+                    {
+                        TestContext.AddTestAttachment(videoPath, "Video de Ejecución (Playwright)");
+                        AllureApi.AddAttachment($"Video_{TestContext.CurrentContext.Test.Name}", "video/webm", videoPath);
+                    }
+                }
+                catch
+                {
+                    // Si el video aún no se ha liberado por completo, ignorar excepción silenciosamente
+                }
             }
         }
     }

@@ -1,0 +1,58 @@
+{
+  "uuid": "8c266c94-e6c6-4fc8-9365-0ac24f79a2b2",
+  "historyId": "e0cf991fd296ab22e7307c4311974beb",
+  "testCaseId": "734f5ed6e7f76e907e8adc8afeb85563",
+  "fullName": "Net8PlaywrightQA:Net8PlaywrightQA.Tests.LoginE2ETests.TC01_LoginExitoso_DebeRedireccionarAProductos()",
+  "labels": [
+    {
+      "name": "thread",
+      "value": "NonParallelWorker"
+    },
+    {
+      "name": "host",
+      "value": "DESKTOP-JV0JDJL"
+    },
+    {
+      "name": "language",
+      "value": "C#"
+    },
+    {
+      "name": "framework",
+      "value": "NUnit 3"
+    },
+    {
+      "name": "package",
+      "value": "Net8PlaywrightQA.Tests"
+    },
+    {
+      "name": "testMethod",
+      "value": "TC01_LoginExitoso_DebeRedireccionarAProductos"
+    },
+    {
+      "name": "testClass",
+      "value": "LoginE2ETests"
+    },
+    {
+      "name": "severity",
+      "value": "critical"
+    },
+    {
+      "name": "suite",
+      "value": "Suite E2E - Autenticación y Seguridad"
+    },
+    {
+      "name": "feature",
+      "value": "Login de Usuarios"
+    }
+  ],
+  "links": [],
+  "name": "TC01_LoginExitoso_DebeRedireccionarAProductos",
+  "status": "passed",
+  "stage": "finished",
+  "description": "TC01 - Login Exitoso con Credenciales de Entorno/Secretos",
+  "steps": [],
+  "attachments": [],
+  "parameters": [],
+  "start": 1786124292397,
+  "stop": 1786124294096
+}
