@@ -102,12 +102,28 @@ jobs:
 
       # 10. Publicar Comentario Automático en el PR con los Resultados de QA
       - name: Comentar Resultados en el Pull Request
-        if: always() && github.event_name == 'pull_request' && matrix.browser == 'chromium'
+        if: always() && matrix.browser == 'chromium'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueNumber = context.issue.number || (context.payload.pull_request && context.payload.pull_request.number);
+            let issueNumber = context.issue.number || (context.payload.pull_request && context.payload.pull_request.number);
+
+            if (!issueNumber && context.payload.ref) {
+              const headBranch = context.payload.ref.replace('refs/heads/', '');
+              if (headBranch) {
+                const prs = await github.rest.pulls.list({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  head: `${context.repo.owner}:${headBranch}`,
+                  state: 'open'
+                });
+                if (prs.data.length > 0) {
+                  issueNumber = prs.data[0].number;
+                }
+              }
+            }
+
             if (!issueNumber) return;
 
             const status = '${{ job.status }}';
