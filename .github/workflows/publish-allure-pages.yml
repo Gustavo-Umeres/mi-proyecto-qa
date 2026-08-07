@@ -1,0 +1,65 @@
+name: Publish Allure Report to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-pages:
+    name: Compilar y Publicar Allure a GitHub Pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Código Fuente
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restaurar Paquetes NuGet
+        run: dotnet restore
+
+      - name: Compilar Solución (.NET 8)
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Instalar Navegadores de Playwright
+        run: pwsh bin/Release/net8.0/playwright.ps1 install --with-deps
+
+      - name: Ejecutar Pruebas de Regresión
+        env:
+          QA_ENV: 'PROD'
+          QA_USER_EMAIL: ${{ secrets.QA_USER_EMAIL }}
+          QA_USER_PASSWORD: ${{ secrets.QA_USER_PASSWORD }}
+        run: |
+          dotnet test --configuration Release --no-build
+
+      - name: Instalar Allure CLI y Generar Reporte HTML
+        if: always()
+        run: |
+          npm install -g allure-commandline --save-dev
+          npx allure generate bin/Release/net8.0/allure-results --clean -o allure-report
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir artefacto a GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./allure-report
+
+      - name: Desplegar a GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
