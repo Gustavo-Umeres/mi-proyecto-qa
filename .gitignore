@@ -1,0 +1,23 @@
+## Build and output directories
+[Bb]in/
+[Oo]bj/
+out/
+
+## Allure temporary results and report
+allure-results/
+allure-report/
+
+## User specific files & IDEs
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.idea/
+.vscode/
+
+## Local test output artifacts
+*.trx
+*.html
+*.webm
+*.png
+evidencias/
