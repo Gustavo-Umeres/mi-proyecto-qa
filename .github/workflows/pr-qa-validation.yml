@@ -105,6 +105,7 @@ jobs:
         if: always() && github.event_name == 'pull_request' && matrix.browser == 'chromium'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: qa-test-summary
           message: |
             ### ${{ job.status == 'success' && '✅' || '❌' }} Reporte Automático de QA en PR #${{ github.event.number }}
