@@ -23,6 +23,10 @@ jobs:
   test-execution:
     name: Ejecución de Pruebas (.NET 8 + Playwright)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
 
     strategy:
       fail-fast: false
@@ -113,10 +117,41 @@ jobs:
             Saludos,
             QA Automation Bot
 
+      # 10. Publicar Comentario Automático en el PR con los Resultados de QA
+      - name: Comentar Resultados en el Pull Request
+        if: always() && github.event_name == 'pull_request' && matrix.browser == 'chromium'
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const status = '${{ job.status }}';
+            const icon = status === 'success' ? '✅' : '❌';
+            const body = `### ${icon} Reporte Automático de QA en PR
+
+            - **Estado de la Ejecución:** \`${status.toUpperCase()}\`
+            - **Framework:** \`.NET 8 + Playwright C#\`
+            - **Autor del PR:** @${{ github.actor }}
+            - **Rama:** \`${{ github.head_ref }}\`
+
+            📊 **Reportes y Evidencias:**
+            - **Allure Report:** [Ver Dashboard de Allure](https://gustavo-umeres.github.io/mi-proyecto-qa/)
+            - **Evidencias en Video y Fotos:** Adjuntadas en los Artefactos del Run.
+
+            🔗 [Ver Ejecución Completa en GitHub Actions](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
   deploy-github-pages:
     name: Publicar Allure Report en GitHub Pages
     needs: test-execution
-    if: always()
+    # Solo despliega a Pages cuando se une a la rama principal 'main', no en los PRs temporales
+    if: always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
